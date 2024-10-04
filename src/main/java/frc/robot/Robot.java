@@ -15,6 +15,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
+
+  // DO NOT REMOVE (very important, everything will crash and burn without this line)
+  boolean win = true;
+
+  // There can be only be one (Highlander)
+  public static RobotMap map = new RobotMap();
+
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
