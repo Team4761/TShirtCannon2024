@@ -22,6 +22,9 @@ public class Robot extends TimedRobot {
   // There can be only be one (Highlander)
   public static RobotMap map = new RobotMap();
 
+  // Joystick control
+  private static final RobocketsController controller = new RobocketsController(Constants.CONTROLLER_PORT);
+
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
@@ -85,7 +88,17 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    if (map.swerve != null) {
+      map.swerve.drive(
+        -controller.getLeftY(),   // Negative to make up the positive direction
+        controller.getLeftX(),
+        -controller.getRightX(),  // Negative to make left (counterclockwise) the positive direction.
+        false,
+        getPeriod()
+      );
+    }
+  }
 
   /** This function is called once when the robot is disabled. */
   @Override
