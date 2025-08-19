@@ -4,9 +4,19 @@
 
 package frc.robot;
 
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
+
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.CvSource;
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -18,6 +28,9 @@ public class Robot extends TimedRobot {
 
   // DO NOT REMOVE (very important, everything will crash and burn without this line)
   boolean win = true;
+
+  //
+  public static double periodSeconds = 0.0;
 
   // There can be only be one (Highlander)
   public static RobotMap map = new RobotMap();
@@ -39,6 +52,8 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+
+    CameraServer.startAutomaticCapture();
   }
 
   /**
@@ -49,7 +64,9 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    periodSeconds = getPeriod();
+  }
 
   /**
    * This autonomous (along with the chooser code above) shows how to select between different
@@ -71,6 +88,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+    CommandScheduler.getInstance().run();
     switch (m_autoSelected) {
       case kCustomAuto:
         // Put custom auto code here
@@ -82,22 +100,27 @@ public class Robot extends TimedRobot {
     }
   }
 
+  Mat frame;
+  CvSource source;
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    frame = new Mat();
+    source = CameraServer.putVideo("Processed", 640, 480);
+  }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    if (map.swerve != null) {
-      map.swerve.drive(
-        -controller.getLeftY(),   // Negative to make up the positive direction
-        controller.getLeftX(),
-        -controller.getRightX(),  // Negative to make left (counterclockwise) the positive direction.
-        false,
-        getPeriod()
-      );
-    }
+    CameraServer.getVideo().grabFrame(frame);
+    Imgproc.rectangle(frame, 
+    new Point(100,100),
+    new Point(200,200),
+    new Scalar(100),
+    100);
+    source.putFrame(frame);
+    // CommandScheduler.getInstance().run();
+    // controller.teleopPeriodic();
   }
 
   /** This function is called once when the robot is disabled. */
@@ -114,7 +137,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    controller.testPeriodic();
+  }
 
   /** This function is called once when the robot is first started up. */
   @Override

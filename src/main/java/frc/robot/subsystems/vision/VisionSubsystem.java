@@ -15,22 +15,15 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 /**
  * Most of the code here will run in a separate thread.
  */
-public class VisionSubsystem {
+public class VisionSubsystem extends SubsystemBase {
     
     public VisionSubsystem() {
-        if (!SmartDashboard.containsKey("Min Hue")) { SmartDashboard.putNumber("Min Hue", 0); }
-        if (!SmartDashboard.containsKey("Min Saturation")) { SmartDashboard.putNumber("Min Saturation", 0); }
-        if (!SmartDashboard.containsKey("Min Value")) { SmartDashboard.putNumber("Min Value", 0); }
-        if (!SmartDashboard.containsKey("Max Hue")) { SmartDashboard.putNumber("Max Hue", 150); }
-        if (!SmartDashboard.containsKey("Max Saturation")) { SmartDashboard.putNumber("Max Saturation", 150); }
-        if (!SmartDashboard.containsKey("Max Value")) { SmartDashboard.putNumber("Max Value", 150); }
-        if (!SmartDashboard.containsKey("Show Vision Mask")) { SmartDashboard.putBoolean("Show Vision Mask", false); }
 
         // Starts a new thread because vision is computationally expensive
         Thread visionThread = new Thread(
@@ -79,14 +72,14 @@ public class VisionSubsystem {
                     Core.inRange(
                         processed, 
                         new Scalar(
-                            SmartDashboard.getNumber("Min Hue", 0),
-                            SmartDashboard.getNumber("Min Saturation", 0),
-                            SmartDashboard.getNumber("Min Value", 0)
+                            0,
+                            0,
+                            0
                         ), 
                         new Scalar(
-                            SmartDashboard.getNumber("Max Hue", 150),
-                            SmartDashboard.getNumber("Max Saturation", 150),
-                            SmartDashboard.getNumber("Max Value", 150)
+                            150,
+                            150,
+                            150
                         ),
                         processed
                     );
@@ -103,7 +96,7 @@ public class VisionSubsystem {
                         }
                     }
                     // Give the output stream a new image to display
-                    if (!SmartDashboard.getBoolean("Show Vision Mask", false))
+                    if (false)
                         outputStream.putFrame(raw);
                     else
                         outputStream.putFrame(processed);

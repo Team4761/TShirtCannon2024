@@ -26,9 +26,9 @@ public class RobotMap {
      * To disable specific parts of the robot, just comment out the line that initializes the subsystem!
     */
     public RobotMap() {
-        leds = new LEDSubsystem();
-        shooter = new ShooterSubsystem();
-        swerve = new SwerveSubsystem();
-        vision = new VisionSubsystem();
+        // leds = new LEDSubsystem();
+        // shooter = new ShooterSubsystem();
+        // swerve = new SwerveSubsystem();
+        // vision = new VisionSubsystem();
     }
 }
